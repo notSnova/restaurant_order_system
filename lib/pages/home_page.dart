@@ -23,7 +23,12 @@ class HomePage extends StatelessWidget {
         //   pageTitle: 'Menu List',
         // ),
         const SizedBox(height: 20),
-        const Center(child: Text('Home Page Content')),
+        const Center(
+          child: Text(
+            'Home Page Content',
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
       ],
     );
   }

@@ -46,13 +46,25 @@ class _MainPageState extends State<MainPage> {
         bodyContent = HomePage(searchController: searchController);
         break;
       case 1:
-        bodyContent = Center(child: Text('Orders Page Content'));
+        bodyContent = Center(
+          child: Text(
+            'Orders Page Content',
+            style: TextStyle(color: Colors.black),
+          ),
+        );
         break;
       case 2:
-        bodyContent = Center(child: Text('Login Page Content'));
+        bodyContent = Center(
+          child: Text(
+            'Login Page Content',
+            style: TextStyle(color: Colors.black),
+          ),
+        );
         break;
       default:
-        bodyContent = Center(child: Text('Page Content'));
+        bodyContent = Center(
+          child: Text('Page Content', style: TextStyle(color: Colors.black)),
+        );
     }
 
     return Scaffold(
