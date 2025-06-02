@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_order_system/models/menu_item.dart';
 import '../widgets/app_bar.dart';
+import '../widgets/category_selector.dart';
+import '../widgets/menu_selection.dart';
 
 class HomePage extends StatelessWidget {
   final TextEditingController searchController;
@@ -22,13 +25,13 @@ class HomePage extends StatelessWidget {
         //   showSearch: false,
         //   pageTitle: 'Menu List',
         // ),
-        const SizedBox(height: 20),
-        const Center(
-          child: Text(
-            'Home Page Content',
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
+        const SizedBox(height: 16),
+
+        // category selector
+        CategorySelector(),
+
+        // menu selection card
+        MenuSelection(items: menuItems),
       ],
     );
   }
