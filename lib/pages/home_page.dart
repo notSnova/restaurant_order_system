@@ -4,6 +4,8 @@ import '../widgets/app_bar.dart';
 import '../widgets/category_selector.dart';
 import '../widgets/menu_selection.dart';
 
+import 'dart:developer';
+
 class HomePage extends StatelessWidget {
   final TextEditingController searchController;
 
@@ -28,7 +30,12 @@ class HomePage extends StatelessWidget {
         const SizedBox(height: 16),
 
         // category selector
-        CategorySelector(),
+        CategorySelector(
+          categories: ['Food', 'Drinks', 'Soups', 'Desserts'],
+          onCategorySelected: (label) {
+            log('Selected: $label'); // access the label
+          },
+        ),
 
         // menu selection card
         MenuSelection(items: menuItems),

@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 
 class CategorySelector extends StatefulWidget {
-  const CategorySelector({super.key});
+  final List<String> categories;
+  final ValueChanged<String>? onCategorySelected;
+  final int initialSelectedIndex;
+
+  const CategorySelector({
+    super.key,
+    required this.categories,
+    this.onCategorySelected,
+    this.initialSelectedIndex = 0,
+  });
 
   @override
   State<CategorySelector> createState() => _CategorySelectorState();
 }
 
 class _CategorySelectorState extends State<CategorySelector> {
-  final List<String> categories = ['Foods', 'Drinks', 'Soups', 'Desserts'];
+  late int selectedIndex;
 
-  // track selected category index
-  int selectedIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+    selectedIndex = widget.initialSelectedIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +34,8 @@ class _CategorySelectorState extends State<CategorySelector> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: List.generate(categories.length, (index) {
-            final category = categories[index];
+          children: List.generate(widget.categories.length, (index) {
+            final category = widget.categories[index];
             final isSelected = index == selectedIndex;
 
             return Padding(
@@ -33,6 +45,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                   setState(() {
                     selectedIndex = index;
                   });
+                  widget.onCategorySelected?.call(category);
                 },
                 child: CategoryItem(label: category, isSelected: isSelected),
               ),
