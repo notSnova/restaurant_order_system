@@ -16,17 +16,12 @@ class HomePage extends StatelessWidget {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
+        // search bar
         CustomAppBar(
           showSearch: true,
           searchController: searchController,
           onSearchChanged: (value) {},
         ),
-
-        // Page Title
-        // CustomAppBar(
-        //   showSearch: false,
-        //   pageTitle: 'Menu List',
-        // ),
         const SizedBox(height: 16),
 
         // category selector
