@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_order_system/pages/home_page.dart';
+import 'package:restaurant_order_system/pages/orders_page.dart';
 import 'package:restaurant_order_system/widgets/tab_bar.dart';
 
 void main() {
@@ -46,12 +47,7 @@ class _MainPageState extends State<MainPage> {
         bodyContent = HomePage(searchController: searchController);
         break;
       case 1:
-        bodyContent = Center(
-          child: Text(
-            'Orders Page Content',
-            style: TextStyle(color: Colors.black),
-          ),
-        );
+        bodyContent = OrdersPage();
         break;
       case 2:
         bodyContent = Center(

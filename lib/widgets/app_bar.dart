@@ -64,9 +64,7 @@ class CustomAppBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     image: DecorationImage(
-                      image: AssetImage(
-                        'assets/restaurant-logo-white.png',
-                      ), // Change to your image path
+                      image: AssetImage('assets/restaurant-logo-white.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -133,13 +131,17 @@ class CustomAppBar extends StatelessWidget {
                         ),
                       ),
                     )
-                    : Text(
-                      pageTitle ?? '',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+                    : Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Text(
+                        pageTitle ?? '',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Istok Web',
+                        ),
                       ),
                     ),
           ),
