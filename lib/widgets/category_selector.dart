@@ -70,7 +70,7 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 105,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       height: 40,
       alignment: Alignment.center,
       decoration: BoxDecoration(
