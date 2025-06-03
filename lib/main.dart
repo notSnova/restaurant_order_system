@@ -67,11 +67,24 @@ class _MainPageState extends State<MainPage> {
         );
     }
 
+    // tab bar
     return Scaffold(
-      body: bodyContent,
-      bottomNavigationBar: TabBars(
-        selectedIndex: _selectedIndex,
-        onTap: _onTabSelected,
+      body: Stack(
+        children: [
+          Positioned.fill(child: bodyContent),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 1, right: 1),
+              child: TabBars(
+                selectedIndex: _selectedIndex,
+                onTap: _onTabSelected,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
