@@ -3,6 +3,7 @@ import 'package:restaurant_order_system/widgets/order_card.dart';
 import 'package:restaurant_order_system/widgets/orders_page_history.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/category_selector.dart';
+import 'dart:developer';
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key});
@@ -30,6 +31,7 @@ class _OrdersPageState extends State<OrdersPage> {
             setState(() {
               selectedCategory = label;
             });
+            log('Selected: $label'); // access the label
           },
         ),
         const SizedBox(height: 25),
