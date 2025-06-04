@@ -31,7 +31,7 @@ class _OrdersPageState extends State<OrdersPage> {
             setState(() {
               selectedCategory = label;
             });
-            log('Selected: $label'); // access the label
+             log('Selected: $label'); // access the label
           },
         ),
         const SizedBox(height: 25),
