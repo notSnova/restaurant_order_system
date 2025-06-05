@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_order_system/pages/home_page.dart';
-import 'package:restaurant_order_system/pages/orders_page.dart';
-import 'package:restaurant_order_system/widgets/tab_bar.dart';
+import 'package:restaurant_order_system/database/db_helper.dart';
+import 'package:restaurant_order_system/pages/welcome_page.dart';
+import 'dart:developer';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final dbHelper = DBHelper();
+  await dbHelper.deleteDatabaseFile();
+  await dbHelper.database;
+  insertMenus();
   runApp(const MyApp());
 }
 
@@ -13,75 +18,48 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFFD9D9D9),
       ),
-      home: const MainPage(),
+      home: const WelcomePage(),
     );
   }
 }
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+void insertMenus() async {
+  final dbHelper = DBHelper();
 
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
+  await dbHelper.insertMenuItem(
+    "assets/menus/nasi_lemak.png",
+    "Nasi Lemak",
+    3.00,
+    "Food",
+  );
+  await dbHelper.insertMenuItem(
+    "assets/menus/bihun_goreng.png",
+    "Bihun Goreng",
+    4.50,
+    "Food",
+  );
+  await dbHelper.insertMenuItem(
+    "assets/menus/kway_teow_goreng.png",
+    "Kway Teow Goreng",
+    5.00,
+    "Food",
+  );
+  await dbHelper.insertMenuItem(
+    "assets/menus/maggi_goreng.png",
+    "Maggi Goreng",
+    4.50,
+    "Food",
+  );
+  await dbHelper.insertMenuItem(
+    "assets/menus/kopi_ais.png",
+    "Kopi Ais",
+    2.00,
+    "Drinks",
+  );
 
-class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
-  final searchController = TextEditingController();
-
-  void _onTabSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget bodyContent;
-
-    switch (_selectedIndex) {
-      case 0:
-        bodyContent = HomePage(searchController: searchController);
-        break;
-      case 1:
-        bodyContent = OrdersPage();
-        break;
-      case 2:
-        bodyContent = Center(
-          child: Text(
-            'Login Page Content',
-            style: TextStyle(color: Colors.black),
-          ),
-        );
-        break;
-      default:
-        bodyContent = Center(
-          child: Text('Page Content', style: TextStyle(color: Colors.black)),
-        );
-    }
-
-    // tab bar
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(child: bodyContent),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 1, right: 1),
-              child: TabBars(
-                selectedIndex: _selectedIndex,
-                onTap: _onTabSelected,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  log("Menu items inserted.");
 }

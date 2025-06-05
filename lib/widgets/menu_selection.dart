@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../models/menu_item.dart';
 
 class MenuSelection extends StatelessWidget {
-  final List<MenuItem> items;
+  final List<Map<String, dynamic>> items;
 
   const MenuSelection({super.key, required this.items});
 
@@ -16,7 +15,7 @@ class MenuSelection extends StatelessWidget {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 5,
-          childAspectRatio: 176 / (223 + 40), // image height + label space
+          childAspectRatio: 176 / (223 + 60), // image + text space
         ),
         itemCount: items.length,
         itemBuilder: (context, index) {
@@ -41,20 +40,29 @@ class MenuSelection extends StatelessWidget {
                     ),
                   ],
                   image: DecorationImage(
-                    image: NetworkImage(item.imageUrl),
+                    image: AssetImage(item['imageUrl']),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                item.label,
+                item['label'],
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Color(0xFF132126),
                   fontSize: 16,
                   fontFamily: 'Istok Web',
                   fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                "RM ${item['price'].toStringAsFixed(2)}",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
