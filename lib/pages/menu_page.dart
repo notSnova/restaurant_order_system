@@ -78,6 +78,85 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
+  void _showQuantityModal(BuildContext context, Map<String, dynamic> item) {
+    int quantity = 1;
+    double price = double.tryParse(item['price'].toString()) ?? 0.0;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            double totalPrice = quantity * price;
+
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    item['label'],
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Price: RM ${totalPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.remove_circle_outline),
+                        onPressed: () {
+                          if (quantity > 1) {
+                            setState(() => quantity--);
+                          }
+                        },
+                      ),
+                      Text('$quantity', style: const TextStyle(fontSize: 20)),
+                      IconButton(
+                        icon: const Icon(Icons.add_circle_outline),
+                        onPressed: () {
+                          setState(() => quantity++);
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      log(
+                        'Added ${item['label']} x $quantity = RM $totalPrice',
+                      );
+                      // TODO: add to order logic
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFBF9B6F),
+                    ),
+                    child: const Text(
+                      'Add Order',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -128,7 +207,12 @@ class _MenuPageState extends State<MenuPage> {
                 ),
               ),
             )
-            : MenuSelection(items: menuItems),
+            : MenuSelection(
+              items: menuItems,
+              onItemTap: (item) {
+                _showQuantityModal(context, item);
+              },
+            ),
       ],
     );
   }
