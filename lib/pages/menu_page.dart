@@ -7,9 +7,14 @@ import '../database/db_helper.dart';
 import 'dart:developer';
 
 class MenuPage extends StatefulWidget {
+  final String tableNumber;
   final TextEditingController searchController;
 
-  const MenuPage({super.key, required this.searchController});
+  const MenuPage({
+    super.key,
+    required this.searchController,
+    required this.tableNumber,
+  });
 
   @override
   State<MenuPage> createState() => _MenuPageState();
@@ -44,6 +49,7 @@ class _MenuPageState extends State<MenuPage> {
       // fetch all items
       items = await dbHelper.getMenuItems();
     } else {
+      // or else by category
       items = await dbHelper.getMenuItemsByCategory(category);
     }
 
@@ -86,10 +92,10 @@ class _MenuPageState extends State<MenuPage> {
         const SizedBox(height: 16),
 
         // table number display
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            'Table Number: 23',
+            'Table Number: ${widget.tableNumber}',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,

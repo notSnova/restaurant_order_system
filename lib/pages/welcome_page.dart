@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_order_system/pages/main_page.dart';
+import 'package:restaurant_order_system/pages/qr_scanner_page.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -61,7 +61,7 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const MainPage()),
+                    MaterialPageRoute(builder: (_) => const QrScannerPage()),
                   );
                 },
                 child: const Text('Scan your table QR code'),

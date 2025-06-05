@@ -4,7 +4,9 @@ import 'package:restaurant_order_system/pages/orders_page.dart';
 import 'package:restaurant_order_system/widgets/tab_bar.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final String tableNumber;
+
+  const MainPage({super.key, required this.tableNumber});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -26,7 +28,10 @@ class _MainPageState extends State<MainPage> {
 
     switch (_selectedIndex) {
       case 0:
-        bodyContent = MenuPage(searchController: searchController);
+        bodyContent = MenuPage(
+          searchController: searchController,
+          tableNumber: widget.tableNumber,
+        );
         break;
       case 1:
         bodyContent = OrdersPage();
