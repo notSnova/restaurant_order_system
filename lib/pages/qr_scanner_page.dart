@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'main_page.dart';
 
+import 'dart:developer';
+
 class QrScannerPage extends StatefulWidget {
-  const QrScannerPage({super.key});
+  final bool isDevMode; // add this flag to constructor
+
+  const QrScannerPage({super.key, this.isDevMode = false});
 
   @override
   State<QrScannerPage> createState() => _QrScannerPageState();
@@ -17,6 +21,18 @@ class _QrScannerPageState extends State<QrScannerPage> {
   void initState() {
     super.initState();
     _controller = MobileScannerController();
+
+    if (widget.isDevMode) {
+      log("[DEV MODE] Bypassing QR scan. tableNumber: 1");
+
+      Future.delayed(const Duration(milliseconds: 500), () {
+        Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(builder: (_) => const MainPage(tableNumber: "1")),
+        );
+      });
+    }
   }
 
   void _handleBarcode(BarcodeCapture capture) {
@@ -49,6 +65,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
 
   @override
   Widget build(BuildContext context) {
+    // if dev mode, optionally show a message while waiting
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFBF9B6F),
@@ -61,7 +78,13 @@ class _QrScannerPageState extends State<QrScannerPage> {
           ),
         ),
       ),
-      body: MobileScanner(controller: _controller, onDetect: _handleBarcode),
+      body:
+          widget.isDevMode
+              ? const SizedBox()
+              : MobileScanner(
+                controller: _controller,
+                onDetect: _handleBarcode,
+              ),
     );
   }
 }

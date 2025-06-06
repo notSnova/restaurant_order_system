@@ -61,7 +61,9 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const QrScannerPage()),
+                    MaterialPageRoute(
+                      builder: (_) => const QrScannerPage(isDevMode: true),
+                    ),
                   );
                 },
                 child: const Text('Scan your table QR code'),
