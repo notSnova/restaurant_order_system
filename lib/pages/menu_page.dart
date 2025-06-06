@@ -90,7 +90,7 @@ class _MenuPageState extends State<MenuPage> {
       builder: (_) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            double totalPrice = quantity * price;
+            double menuPrice = quantity * price;
 
             return Padding(
               padding: const EdgeInsets.all(24),
@@ -106,7 +106,7 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Price: RM ${totalPrice.toStringAsFixed(2)}',
+                    'Price: RM ${menuPrice.toStringAsFixed(2)}',
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 24),
@@ -132,12 +132,32 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      log(
-                        'Added ${item['label']} x $quantity = RM $totalPrice',
+                    onPressed: () async {
+                      // insert into database
+                      await dbHelper.insertOrder(
+                        tableNumber: widget.tableNumber,
+                        itemLabel: item['label'],
+                        quantity: quantity,
+                        menuPrice: menuPrice,
                       );
-                      // TODO: add to order logic
+
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
+                      // ignore: use_build_context_synchronously
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Your order has been added!',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          backgroundColor: Color(0xFFBF9B6F),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFBF9B6F),

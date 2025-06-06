@@ -32,10 +32,23 @@ class DBHelper {
           category TEXT NOT NULL
         )
       ''');
+
+        await db.execute('''
+        CREATE TABLE orders (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          table_number TEXT NOT NULL,
+          item_label TEXT NOT NULL,
+          quantity INTEGER NOT NULL,
+          menu_price REAL NOT NULL,
+          status TEXT NOT NULL,
+          timestamp TEXT NOT NULL
+        ) 
+      ''');
       },
     );
   }
 
+  // menu page sql logic
   Future<void> insertMenuItem(
     String imageUrl,
     String label,
@@ -65,6 +78,28 @@ class DBHelper {
       where: 'category = ?',
       whereArgs: [category],
     );
+  }
+
+  // order page sql logic
+  Future<void> insertOrder({
+    required String tableNumber,
+    required String itemLabel,
+    required int quantity,
+    required double menuPrice,
+    String status = 'pending',
+  }) async {
+    final db = await database;
+
+    await db.insert('orders', {
+      'table_number': tableNumber,
+      'item_label': itemLabel,
+      'quantity': quantity,
+      'menu_price': menuPrice,
+      'timestamp': DateTime.now().toIso8601String(),
+      'status': status,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+
+    log('Order added: [$status] $itemLabel x$quantity @ Table $tableNumber');
   }
 
   // delete database
