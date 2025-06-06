@@ -46,12 +46,14 @@ class MenuSelection extends StatelessWidget {
                         offset: Offset(0, 4),
                       ),
                     ],
-                    image: DecorationImage(
-                      image: AssetImage(item['imageUrl']),
-                      fit: BoxFit.cover,
-                    ),
+                    color: Colors.white,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(item['imageUrl'], fit: BoxFit.contain),
                   ),
                 ),
+
                 const SizedBox(height: 8),
                 Text(
                   item['label'],

@@ -86,7 +86,7 @@ class DBHelper {
     required String itemLabel,
     required int quantity,
     required double menuPrice,
-    String status = 'pending',
+    String status = 'Preparing',
   }) async {
     final db = await database;
 
@@ -100,6 +100,61 @@ class DBHelper {
     }, conflictAlgorithm: ConflictAlgorithm.replace);
 
     log('Order added: [$status] $itemLabel x$quantity @ Table $tableNumber');
+  }
+
+  Future<List<Map<String, dynamic>>> getOrders() async {
+    final db = await database;
+
+    return await db.rawQuery('''
+    SELECT 
+      orders.id,
+      orders.table_number,
+      orders.item_label,
+      orders.quantity,
+      orders.menu_price,
+      orders.status,
+      orders.timestamp,
+      menu_items.imageUrl
+    FROM orders
+    LEFT JOIN menu_items 
+    ON orders.item_label = menu_items.label
+    ORDER BY orders.timestamp DESC
+  ''');
+  }
+
+  Future<List<Map<String, dynamic>>> getOrdersByStatus(String status) async {
+    final db = await database;
+
+    return await db.rawQuery(
+      '''
+    SELECT 
+      orders.id,
+      orders.table_number,
+      orders.item_label,
+      orders.quantity,
+      orders.menu_price,
+      orders.status,
+      orders.timestamp,
+      menu_items.imageUrl
+    FROM orders
+    LEFT JOIN menu_items 
+    ON orders.item_label = menu_items.label
+    WHERE orders.status = ?
+    ORDER BY orders.timestamp DESC
+  ''',
+      [status],
+    );
+  }
+
+  Future<void> cancelOrder(int orderId) async {
+    final db = await database;
+    await db.update(
+      'orders',
+      {'status': 'Cancelled'},
+      where: 'id = ?',
+      whereArgs: [orderId],
+    );
+    log('Order $orderId cancelled');
   }
 
   // delete database
