@@ -3,14 +3,34 @@ import 'package:flutter/material.dart';
 class TabBars extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTap;
+  final String? adminId;
 
-  const TabBars({super.key, required this.selectedIndex, required this.onTap});
+  const TabBars({
+    super.key,
+    required this.selectedIndex,
+    required this.onTap,
+    this.adminId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Colors
+    // colors
     const activeColor = Color(0xFFBF9B6F);
     const inactiveColor = Colors.grey;
+
+    // tab bars icon
+    final List<_TabItemData> tabItems =
+        // tab for admin
+        adminId != null
+            ? [
+              _TabItemData(0, Icons.qr_code, 'Table Qr Code'),
+              _TabItemData(1, Icons.manage_accounts, 'Manage'),
+            ]
+            // tab for customer
+            : [
+              _TabItemData(0, Icons.home, 'Home'),
+              _TabItemData(1, Icons.receipt_long, 'Orders'),
+            ];
 
     return Padding(
       padding: const EdgeInsets.only(left: 25, right: 25, bottom: 35),
@@ -31,29 +51,18 @@ class TabBars extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildTabItem(
-              index: 0,
-              icon: Icons.home,
-              label: 'Home',
-              color: selectedIndex == 0 ? activeColor : inactiveColor,
-              onTap: onTap,
-            ),
-            _buildTabItem(
-              index: 1,
-              icon: Icons.receipt_long,
-              label: 'Orders',
-              color: selectedIndex == 1 ? activeColor : inactiveColor,
-              onTap: onTap,
-            ),
-            _buildTabItem(
-              index: 2,
-              icon: Icons.person,
-              label: 'Login',
-              color: selectedIndex == 2 ? activeColor : inactiveColor,
-              onTap: onTap,
-            ),
-          ],
+          children:
+              tabItems.map((item) {
+                final color =
+                    selectedIndex == item.index ? activeColor : inactiveColor;
+                return _buildTabItem(
+                  index: item.index,
+                  icon: item.icon,
+                  label: item.label,
+                  color: color,
+                  onTap: onTap,
+                );
+              }).toList(),
         ),
       ),
     );
@@ -88,10 +97,10 @@ class TabBars extends StatelessWidget {
                   boxShadow:
                       isSelected
                           ? [
-                            BoxShadow(
+                            const BoxShadow(
                               color: Color(0x66000000),
                               blurRadius: 8,
-                              offset: const Offset(0, 4),
+                              offset: Offset(0, 4),
                             ),
                           ]
                           : [],
@@ -120,4 +129,12 @@ class TabBars extends StatelessWidget {
       ),
     );
   }
+}
+
+class _TabItemData {
+  final int index;
+  final IconData icon;
+  final String label;
+
+  _TabItemData(this.index, this.icon, this.label);
 }

@@ -66,7 +66,7 @@ class WelcomePage extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text('Scan your table QR code'),
+                child: const Text('Scan QR code'),
               ),
             ],
           ),

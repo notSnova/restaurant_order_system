@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'main_page.dart';
+import 'admin/admin_page.dart';
 
 import 'dart:developer';
 
@@ -23,13 +24,21 @@ class _QrScannerPageState extends State<QrScannerPage> {
     _controller = MobileScannerController();
 
     if (widget.isDevMode) {
-      log("[DEV MODE] Bypassing QR scan. tableNumber: 1");
+      log("[DEV MODE] Bypassing QR scan.");
 
       Future.delayed(const Duration(milliseconds: 500), () {
+        // customer bypass
+        // Navigator.pushReplacement(
+        //   // ignore: use_build_context_synchronously
+        //   context,
+        //   MaterialPageRoute(builder: (_) => const MainPage(tableNumber: "1")),
+        // );
+
+        // admin bypass
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (_) => const MainPage(tableNumber: "1")),
+          MaterialPageRoute(builder: (_) => const AdminPage(adminId: "dev")),
         );
       });
     }
@@ -40,15 +49,28 @@ class _QrScannerPageState extends State<QrScannerPage> {
 
     final String? code = capture.barcodes.first.rawValue;
 
+    // if data is table number, navigate to customer page
     if (code != null && code.startsWith("table_")) {
       setState(() => _isScanned = true);
 
       final tableNumber = code.replaceFirst("table_", "");
-      _controller.stop(); // stop the scanner before navigating
+      _controller.stop();
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => MainPage(tableNumber: tableNumber)),
+      );
+
+      // else to admin page
+    } else if (code != null && code.startsWith("admin_")) {
+      setState(() => _isScanned = true);
+
+      final adminId = code.replaceFirst("admin_", "");
+      _controller.stop();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => AdminPage(adminId: adminId)),
       );
     } else {
       ScaffoldMessenger.of(

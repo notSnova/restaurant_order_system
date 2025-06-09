@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_order_system/pages/menu_page.dart';
+import 'package:restaurant_order_system/pages/admin/generate_qr_page.dart';
 import 'package:restaurant_order_system/pages/orders_page.dart';
 import 'package:restaurant_order_system/widgets/tab_bar.dart';
 
-class MainPage extends StatefulWidget {
-  final String tableNumber;
+class AdminPage extends StatefulWidget {
+  final String adminId;
 
-  const MainPage({super.key, required this.tableNumber});
+  const AdminPage({super.key, required this.adminId});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<AdminPage> createState() => _AdminPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _AdminPageState extends State<AdminPage> {
   int _selectedIndex = 0;
   final searchController = TextEditingController();
 
@@ -28,10 +28,7 @@ class _MainPageState extends State<MainPage> {
 
     switch (_selectedIndex) {
       case 0:
-        bodyContent = MenuPage(
-          searchController: searchController,
-          tableNumber: widget.tableNumber,
-        );
+        bodyContent = GenerateQRPage(adminId: widget.adminId);
         break;
       case 1:
         bodyContent = OrdersPage();
@@ -56,6 +53,7 @@ class _MainPageState extends State<MainPage> {
               child: TabBars(
                 selectedIndex: _selectedIndex,
                 onTap: _onTabSelected,
+                adminId: widget.adminId,
               ),
             ),
           ),

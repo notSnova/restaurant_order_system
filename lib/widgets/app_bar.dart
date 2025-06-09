@@ -5,6 +5,7 @@ class CustomAppBar extends StatelessWidget {
   final String? pageTitle;
   final TextEditingController? searchController;
   final ValueChanged<String>? onSearchChanged;
+  final VoidCallback? onBack;
 
   const CustomAppBar({
     super.key,
@@ -12,6 +13,7 @@ class CustomAppBar extends StatelessWidget {
     this.pageTitle,
     this.searchController,
     this.onSearchChanged,
+    this.onBack,
   });
 
   @override
@@ -30,7 +32,7 @@ class CustomAppBar extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Background color and image
+          // background
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -47,7 +49,22 @@ class CustomAppBar extends StatelessWidget {
             ),
           ),
 
-          // App Title
+          // back button
+          if (onBack != null)
+            Positioned(
+              top: 40,
+              left: 10,
+              child: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                onPressed: onBack,
+              ),
+            ),
+
+          // title row
           Positioned(
             top: 70,
             left: 25,
@@ -57,7 +74,6 @@ class CustomAppBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Logo
                 Container(
                   width: 40,
                   height: 40,
@@ -69,9 +85,7 @@ class CustomAppBar extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(width: 10),
-
                 const Text(
                   'Restaurant Order',
                   style: TextStyle(
@@ -85,7 +99,7 @@ class CustomAppBar extends StatelessWidget {
             ),
           ),
 
-          // Search OR Page Title
+          // search or page title
           Positioned(
             left: 25,
             right: 25,
@@ -102,7 +116,7 @@ class CustomAppBar extends StatelessWidget {
                       child: TextField(
                         controller: searchController,
                         onChanged: onSearchChanged,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 18,
                           fontWeight: FontWeight.w400,
@@ -116,7 +130,7 @@ class CustomAppBar extends StatelessWidget {
                           ),
                           border: InputBorder.none,
                           prefixIcon: Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 0),
+                            padding: const EdgeInsets.only(left: 10),
                             child: Icon(
                               Icons.search,
                               color: Colors.grey[400],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_order_system/pages/welcome_page.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/category_selector.dart';
 import '../widgets/menu_selection.dart';
@@ -187,6 +188,12 @@ class _MenuPageState extends State<MenuPage> {
           showSearch: true,
           searchController: widget.searchController,
           onSearchChanged: _filterMenuItems,
+          onBack: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => WelcomePage()),
+            );
+          },
         ),
         const SizedBox(height: 16),
 
