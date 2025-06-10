@@ -34,7 +34,7 @@ class _MainPageState extends State<MainPage> {
         );
         break;
       case 1:
-        bodyContent = OrdersPage();
+        bodyContent = OrdersPage(tableNumber: widget.tableNumber);
         break;
       default:
         bodyContent = const Center(

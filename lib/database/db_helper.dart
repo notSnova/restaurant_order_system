@@ -41,6 +41,8 @@ class DBHelper {
           quantity INTEGER NOT NULL,
           menu_price REAL NOT NULL,
           status TEXT NOT NULL,
+          payment_status TEXT NOT NULL,
+          payment_id TEXT NULL,
           timestamp TEXT NOT NULL
         ) 
       ''');
@@ -87,6 +89,7 @@ class DBHelper {
     required int quantity,
     required double menuPrice,
     String status = 'Preparing',
+    String paymentStatus = 'Unpaid',
   }) async {
     final db = await database;
 
@@ -97,6 +100,7 @@ class DBHelper {
       'menu_price': menuPrice,
       'timestamp': DateTime.now().toIso8601String(),
       'status': status,
+      'payment_status': paymentStatus,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
 
     log('Order added: [$status] $itemLabel x$quantity @ Table $tableNumber');
@@ -113,6 +117,7 @@ class DBHelper {
       orders.quantity,
       orders.menu_price,
       orders.status,
+      orders.payment_status,
       orders.timestamp,
       menu_items.imageUrl
     FROM orders
@@ -120,6 +125,34 @@ class DBHelper {
     ON orders.item_label = menu_items.label
     ORDER BY orders.timestamp DESC
   ''');
+  }
+
+  Future<List<Map<String, dynamic>>> getOrdersByTableAndStatus({
+    required String tableNumber,
+    required String status,
+  }) async {
+    final db = await database;
+
+    return await db.rawQuery(
+      '''
+    SELECT 
+      orders.id,
+      orders.table_number,
+      orders.item_label,
+      orders.quantity,
+      orders.menu_price,
+      orders.status,
+      orders.payment_status,
+      orders.timestamp,
+      menu_items.imageUrl
+    FROM orders
+    LEFT JOIN menu_items 
+    ON orders.item_label = menu_items.label
+    WHERE orders.table_number = ? AND orders.status = ? AND orders.payment_status = 'Unpaid'
+    ORDER BY orders.timestamp DESC
+  ''',
+      [tableNumber, status],
+    );
   }
 
   Future<List<Map<String, dynamic>>> getOrdersByStatus(String status) async {
@@ -140,7 +173,7 @@ class DBHelper {
     LEFT JOIN menu_items 
     ON orders.item_label = menu_items.label
     WHERE orders.status = ?
-    ORDER BY orders.timestamp DESC
+    ORDER BY orders.timestamp ASC
   ''',
       [status],
     );
@@ -155,6 +188,86 @@ class DBHelper {
       whereArgs: [orderId],
     );
     log('Order $orderId cancelled');
+  }
+
+  Future<void> completeOrder(int orderId) async {
+    final db = await database;
+    await db.update(
+      'orders',
+      {'status': 'Completed'},
+      where: 'id = ?',
+      whereArgs: [orderId],
+    );
+    log('Order $orderId completed');
+  }
+
+  Future<List<Map<String, dynamic>>> getOrdersByTableAndPaymentStatus({
+    required String paymentStatus,
+    String? tableNumber,
+  }) async {
+    final db = await database;
+
+    String query = '''
+    SELECT 
+      orders.id,
+      orders.table_number,
+      orders.item_label,
+      orders.quantity,
+      orders.menu_price,
+      orders.status,
+      orders.payment_status,
+      orders.payment_id,
+      orders.timestamp,
+      menu_items.imageUrl
+    FROM orders
+    LEFT JOIN menu_items 
+    ON orders.item_label = menu_items.label
+    WHERE orders.status = 'Completed' AND orders.payment_status = ?
+  ''';
+
+    List<dynamic> args = [paymentStatus];
+
+    if (tableNumber != null) {
+      query += ' AND orders.table_number = ?';
+      args.add(tableNumber);
+    }
+
+    query += ' ORDER BY orders.timestamp DESC';
+
+    return await db.rawQuery(query, args);
+  }
+
+  Future<void> updateOrderPaymentStatus(
+    int orderId,
+    String paymentStatus, {
+    String? paymentId,
+  }) async {
+    final db = await database;
+    await db.update(
+      'orders',
+      {
+        'payment_status': paymentStatus,
+        if (paymentId != null) 'payment_id': paymentId,
+      },
+      where: 'id = ?',
+      whereArgs: [orderId],
+    );
+
+    log(
+      'Order $orderId marked as $paymentStatus with payment ID: ${paymentId ?? 'N/A'}',
+    );
+  }
+
+  Future<void> updateOrderPaymentStatusCancelled(String tableNumber) async {
+    final db = await database;
+    await db.update(
+      'orders',
+      {'payment_status': 'Refunded'},
+      where: 'table_number = ? AND status = ?',
+      whereArgs: [tableNumber, 'Cancelled'],
+    );
+
+    log('Cancelled orders for table $tableNumber marked as Refunded.');
   }
 
   // delete database

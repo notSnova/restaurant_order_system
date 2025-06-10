@@ -24,7 +24,8 @@ class TabBars extends StatelessWidget {
         adminId != null
             ? [
               _TabItemData(0, Icons.qr_code, 'Table Qr Code'),
-              _TabItemData(1, Icons.manage_accounts, 'Manage'),
+              _TabItemData(1, Icons.receipt_long, 'Customer Orders'),
+              _TabItemData(2, Icons.barcode_reader, 'Payment'),
             ]
             // tab for customer
             : [

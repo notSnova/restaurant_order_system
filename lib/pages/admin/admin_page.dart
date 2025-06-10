@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_order_system/pages/admin/customer_order_page.dart';
 import 'package:restaurant_order_system/pages/admin/generate_qr_page.dart';
-import 'package:restaurant_order_system/pages/orders_page.dart';
+import 'package:restaurant_order_system/pages/admin/payment_page.dart';
 import 'package:restaurant_order_system/widgets/tab_bar.dart';
 
 class AdminPage extends StatefulWidget {
@@ -31,8 +32,10 @@ class _AdminPageState extends State<AdminPage> {
         bodyContent = GenerateQRPage(adminId: widget.adminId);
         break;
       case 1:
-        bodyContent = OrdersPage();
+        bodyContent = CustomerOrderPage();
         break;
+      case 2:
+        bodyContent = PaymentPage(searchController: searchController);
       default:
         bodyContent = const Center(
           child: Text('Page Content', style: TextStyle(color: Colors.black)),

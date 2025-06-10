@@ -36,14 +36,17 @@ class _GenerateQRPageState extends State<GenerateQRPage> {
     final tableNumber = int.tryParse(tableNumberText);
 
     // if table number is below than 1
-    if (tableNumber == null || tableNumber <= 0) {
+    if (tableNumber == null || tableNumber <= 0 || tableNumber > 30) {
       setState(() {
-        _errorText = 'Must be a number greater than 0';
+        _errorText = 'Table number must be between 0 - 30';
       });
       return;
     }
 
     final generatedQrData = 'table_$tableNumber';
+
+    // dismiss the keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
 
     // show modal bottom sheet with QR code
     showModalBottomSheet(

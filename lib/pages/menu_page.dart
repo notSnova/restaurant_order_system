@@ -157,6 +157,7 @@ class _MenuPageState extends State<MenuPage> {
                             textAlign: TextAlign.center,
                           ),
                           backgroundColor: Color(0xFFBF9B6F),
+                          duration: const Duration(seconds: 2),
                         ),
                       );
                     },
@@ -237,6 +238,7 @@ class _MenuPageState extends State<MenuPage> {
             : MenuSelection(
               items: menuItems,
               onItemTap: (item) {
+                FocusManager.instance.primaryFocus?.unfocus();
                 _showQuantityModal(context, item);
               },
             ),
