@@ -61,9 +61,7 @@ class WelcomePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const QrScannerPage(isDevMode: true),
-                    ),
+                    MaterialPageRoute(builder: (_) => const QrScannerPage()),
                   );
                 },
                 child: const Text('Scan QR code'),

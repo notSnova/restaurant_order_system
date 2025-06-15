@@ -43,7 +43,8 @@ class DBHelper {
           status TEXT NOT NULL,
           payment_status TEXT NOT NULL,
           payment_id TEXT NULL,
-          timestamp TEXT NOT NULL
+          timestamp TEXT NOT NULL,
+          payment_timestamp TEXT
         ) 
       ''');
       },
@@ -218,6 +219,7 @@ class DBHelper {
       orders.payment_status,
       orders.payment_id,
       orders.timestamp,
+      orders.payment_timestamp,
       menu_items.imageUrl
     FROM orders
     LEFT JOIN menu_items 
@@ -248,6 +250,7 @@ class DBHelper {
       {
         'payment_status': paymentStatus,
         if (paymentId != null) 'payment_id': paymentId,
+        'payment_timestamp': DateTime.now().toIso8601String(),
       },
       where: 'id = ?',
       whereArgs: [orderId],

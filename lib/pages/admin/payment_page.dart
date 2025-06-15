@@ -2,6 +2,7 @@ import 'dart:developer' as developer;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:restaurant_order_system/database/db_helper.dart';
 import 'package:restaurant_order_system/widgets/app_bar.dart';
 import 'package:restaurant_order_system/widgets/category_selector.dart';
@@ -28,6 +29,17 @@ class _PaymentPageState extends State<PaymentPage> {
       length,
       (index) => chars[rand.nextInt(chars.length)],
     ).join();
+  }
+
+  // format the timestamp
+  String _formatPaymentTimestamp(String timestamp) {
+    try {
+      final dateTime = DateTime.parse(timestamp);
+      return DateFormat('d MMM yyyy, h:mm a').format(dateTime);
+      // Example: "15 Jun 2025, 8:30 PM"
+    } catch (e) {
+      return 'Invalid date';
+    }
   }
 
   @override
@@ -164,36 +176,52 @@ class _PaymentPageState extends State<PaymentPage> {
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Left side - Table info
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Table $tableNumber',
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                                  // LEFT SIDE
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Table $tableNumber',
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'Total: RM ${tableTotal.toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          'Total: RM ${tableTotal.toStringAsFixed(2)}',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
 
-                                  // Right side - Status
+                                  // RIGHT SIDE
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
+                                      if (selectedCategory == 'Paid' &&
+                                          orders.first['payment_timestamp'] !=
+                                              null)
+                                        Text(
+                                          _formatPaymentTimestamp(
+                                            orders.first['payment_timestamp'],
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      const SizedBox(height: 8),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 12,
@@ -280,6 +308,12 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
                   ),
                 ),
+                if (selectedCategory == 'Paid' &&
+                    orders.first['payment_timestamp'] != null)
+                  Text(
+                    'on ${_formatPaymentTimestamp(orders.first['payment_timestamp'])}',
+                    style: const TextStyle(fontSize: 14, color: Colors.white),
+                  ),
                 const SizedBox(height: 30),
 
                 // Order Items List

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'main_page.dart';
 import 'admin/admin_page.dart';
+import 'welcome_page.dart';
 
 import 'dart:developer';
 
@@ -68,9 +69,155 @@ class _QrScannerPageState extends State<QrScannerPage> {
       final adminId = code.replaceFirst("admin_", "");
       _controller.stop();
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => AdminPage(adminId: adminId)),
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          final TextEditingController codeController = TextEditingController();
+          String? errorText;
+
+          return StatefulBuilder(
+            builder: (context, setStateDialog) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                backgroundColor: Colors.white,
+                title: const Text(
+                  'Admin Security Code',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Istok Web',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+                content: TextField(
+                  controller: codeController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  obscureText: true,
+                  style: const TextStyle(
+                    fontFamily: 'Istok Web',
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Enter 4-digit code',
+                    hintStyle: const TextStyle(
+                      fontFamily: 'Istok Web',
+                      color: Colors.black,
+                    ),
+                    counterText: '',
+                    errorText: errorText,
+                    focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFBF9B6F),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black, width: 1),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    errorBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red, width: 1.5),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    final digitsOnly = value.replaceAll(RegExp(r'[^\d]'), '');
+                    if (value != digitsOnly) {
+                      codeController.text = digitsOnly;
+                      codeController.selection = TextSelection.fromPosition(
+                        TextPosition(offset: digitsOnly.length),
+                      );
+                    }
+
+                    if (errorText != null) {
+                      setStateDialog(() => errorText = null);
+                    }
+                  },
+                ),
+                actionsPadding: const EdgeInsets.only(right: 16, bottom: 10),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      setState(() => _isScanned = false);
+                      _controller.start();
+                    },
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.grey.shade700,
+                      textStyle: const TextStyle(
+                        fontFamily: 'Istok Web',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (codeController.text == '0123') {
+                        Navigator.pop(context);
+
+                        // login message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Admin $adminId logged in.',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            backgroundColor: const Color(0xFFBF9B6F),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+
+                        // redirect to admin page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => AdminPage(adminId: adminId),
+                          ),
+                        );
+                      } else {
+                        setStateDialog(() {
+                          errorText = 'Incorrect code';
+                        });
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFBF9B6F),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      textStyle: const TextStyle(
+                        fontFamily: 'Istok Web',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text('Confirm'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
       );
     } else {
       ScaffoldMessenger.of(
@@ -98,6 +245,15 @@ class _QrScannerPageState extends State<QrScannerPage> {
             fontFamily: 'Istok Web',
             fontWeight: FontWeight.w700,
           ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 24),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const WelcomePage()),
+            );
+          },
         ),
       ),
       body:
