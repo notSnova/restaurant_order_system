@@ -43,7 +43,7 @@ class _GenerateQRPageState extends State<GenerateQRPage> {
       return;
     }
 
-    final generatedQrData = 'table_$tableNumber';
+    final generatedQrData = QrDataFactory.generateTableQr(tableNumber);
 
     // dismiss the keyboard
     FocusManager.instance.primaryFocus?.unfocus();
@@ -176,4 +176,8 @@ class _GenerateQRPageState extends State<GenerateQRPage> {
       ),
     );
   }
+}
+
+class QrDataFactory {
+  static String generateTableQr(int tableNumber) => 'table_$tableNumber';
 }
