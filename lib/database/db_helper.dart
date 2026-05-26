@@ -59,6 +59,24 @@ class DBHelper {
     String category,
   ) async {
     final db = await database;
+
+    final existingItems = await db.query(
+      'menu_items',
+      where: 'label = ?',
+      whereArgs: [label],
+      limit: 1,
+    );
+
+    if (existingItems.isNotEmpty) {
+      await db.update(
+        'menu_items',
+        {'imageUrl': imageUrl, 'price': price, 'category': category},
+        where: 'label = ?',
+        whereArgs: [label],
+      );
+      return;
+    }
+
     await db.insert('menu_items', {
       'imageUrl': imageUrl,
       'label': label,

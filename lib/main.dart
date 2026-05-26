@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_order_system/database/db_helper.dart';
+import 'package:restaurant_order_system/database/menu_seed.dart';
 import 'package:restaurant_order_system/pages/welcome_page.dart';
-import 'dart:developer';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dbHelper = DBHelper();
-  await dbHelper.deleteDatabaseFile();
   await dbHelper.database;
-  insertMenus();
+  await insertMenus();
   runApp(const MyApp());
 }
 
@@ -26,42 +25,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-void insertMenus() async {
-  final dbHelper = DBHelper();
-
-  await dbHelper.insertMenuItem(
-    "assets/menus/nasi_lemak.png",
-    "Nasi Lemak",
-    3.00,
-    "Food",
-  );
-  await dbHelper.insertMenuItem(
-    "assets/menus/bihun_goreng.png",
-    "Bihun Goreng",
-    4.50,
-    "Food",
-  );
-  await dbHelper.insertMenuItem(
-    "assets/menus/kway_teow_goreng.png",
-    "Kway Teow Goreng",
-    5.00,
-    "Food",
-  );
-  await dbHelper.insertMenuItem(
-    "assets/menus/maggi_goreng.png",
-    "Maggi Goreng",
-    4.50,
-    "Food",
-  );
-  await dbHelper.insertMenuItem(
-    "assets/menus/kopi_ais.png",
-    "Kopi Ais",
-    2.00,
-    "Drinks",
-  );
-
-  log("Menu items inserted.");
-}
-
-// part ni dah siap
